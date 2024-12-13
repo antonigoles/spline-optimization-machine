@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>numerki wizualajzer</title>
+</head>
+<body>
+    <h3 style="width: 100%;">Point selector</h3>
+    <div id="performance-metric">
+        Performance metric:
+        <div id="points-calculated"></div>
+    </div>
+    <input type="number" placeholder="Szerokosc podgladu" name="width" id="width" value="1440">
+    <input type="number" placeholder="Wysokosc podgladu" name="height" id="height"  value="810">
+    <div style="display: flex; flex-direction: row; gap: 25px;">
+        <div style="display: flex; flex-direction: column;">
+            <canvas oncontextmenu="return false;" style="cursor: none; border: 1px solid black; background-repeat: no-repeat; background-size: contain;" width="1440" height="810"></canvas>
+            <div>
+                <label for="background-file">Załaduj plik tła
+                    <input type="file" name="background-file" id="background-file">
+                </label>
+                <label for="state-file">Załaduj stan
+                    <input type="file" name="state-file" id="state-file">
+
+                </label>
+                <br>
+                <button id="download-file">Pobierz aktualny stan</button>
+                <button id="download-comp-file">Pobierz aktualny stan jako format konkursowy z optymalizacjami</button>
+            </div>
+            
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px">
+            <div style="display: flex; flex-direction: column; gap: 15px">
+                <p>Aktualnie edytowany obiekt</p>
+                <div style="display: flex; flex-direction: row; gap: 15px">
+                    <select id="object-sel" style="width: 200px;" size="20">
+                    </select>
+                    <select id="lod-sel" style="width: 200px;" size="20">
+                        <option value="low">low</option>
+                        <option selected value="medium">medium</option>
+                        <option value="high">high</option>
+                    </select>
+                </div>
+                <button id="add-obj-btn">Nowy objekt</button>
+                <button id="rem-obj-btn">Usun obiekt</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 15px">
+                <p>Punkty</p>
+                    <select id="point-sel" style="width: 200px;" size="20">
+                    </select>
+                <button id="rem-point-btn">Usun ostatni punkt</button>
+                <button id="revert-rem-point-btn">Cofnij usuń</button>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label for="thickness">thickness</label>
+            <input type="range" value="8" min="1" max="16" step="0.1" name="thickness" id="thickness">
+            <label for="distanceNormCoefficient">Distance Normalization Coefficient</label>
+            <input type="range" value="1" min="0" max="4" step="0.1" name="distanceNormCoefficient" id="distanceNormCoefficient">
+            <label for="heatMapSensitivity">Heat Map Sensitivity</label>
+            <input type="range" value="1" min="1" max="1000" step="1" name="heatMapSensitivity" id="heatMapSensitivity">
+            <label for="dapreduction">Deriviatvie Angle Point Reduction</label>
+            <input type="range" value="1" min="1" max="180" step="1" name="dapreduction" id="dapreduction">
+            <label for="RDPReduction">Ramer-Douglas-Peucker epsilon</label>
+            <input type="range" value="0" min="0" max="12" step="0.1" name="RDPReduction" id="RDPReduction">
+            <h2>LOD LOW</h2>
+            <div id="lod-low" style="display: flex; flex-direction: column;">
+                <label for="rounding">rounding</label>
+                <input type="range" min="-5" max="10" step="1" name="rounding" class="rounding">
+                <label for="skip-coefficient">Skip coefficient</label>
+                <input type="range" value="2" min="0" max="32" step="1" name="skip-coefficient" class="skip-coefficient">
+                <label for="moment-speedup-coefficient">Moment Speedup Coefficient</label>
+                <input type="range" value="0" min="0" max="2" step="0.1" name="moment-speedup-coefficient" class="moment-speedup-coefficient">
+                <label for="line-approximation-angle">Line Approximation Angle</label>
+                <input type="range" value="15" min="0" max="180" step="0.1" name="line-approximation-angle" class="line-approximation-angle">
+                <label for="base-control-point-count">Base Control Point Count</label>
+                <input type="range" value="50" min="1" max="100" step="1" name="base-control-point-count" class="base-control-point-count">
+            </div>
+            <h2>LOD MEDIUM</h2>
+            <div id="lod-medium" style="display: flex; flex-direction: column;">
+                <label for="rounding">rounding</label>
+                <input type="range" min="-5" max="10" step="1" name="rounding" class="rounding">
+                <label for="skip-coefficient">Skip coefficient</label>
+                <input type="range" value="2" min="0" max="32" step="1" name="skip-coefficient" class="skip-coefficient">
+                <label for="moment-speedup-coefficient">Moment Speedup Coefficient</label>
+                <input type="range" value="0" min="0" max="2" step="0.1" name="moment-speedup-coefficient" class="moment-speedup-coefficient">
+                <label for="line-approximation-angle">Line Approximation Angle</label>
+                <input type="range" value="15" min="0" max="180" step="0.1" name="line-approximation-angle" class="line-approximation-angle">
+                <label for="base-control-point-count">Base Control Point Count</label>
+                <input type="range" value="50" min="1" max="100" step="1" name="base-control-point-count" class="base-control-point-count">
+            </div>
+            <h2>LOD HIGH</h2>
+            <div id="lod-high" style="display: flex; flex-direction: column;"> 
+                <label for="rounding">rounding</label>
+                <input type="range" min="-5" max="10" step="1" name="rounding" class="rounding">
+                <label for="skip-coefficient">Skip coefficient</label>
+                <input type="range" value="2" min="0" max="32" step="1" name="skip-coefficient" class="skip-coefficient">
+                <label for="moment-speedup-coefficient">Moment Speedup Coefficient</label>
+                <input type="range" value="0" min="0" max="2" step="0.1" name="moment-speedup-coefficient" class="moment-speedup-coefficient">
+                <label for="line-approximation-angle">Line Approximation Angle</label>
+                <input type="range" value="15" min="0" max="180" step="0.1" name="line-approximation-angle" class="line-approximation-angle">
+                <label for="base-control-point-count">Base Control Point Count</label>
+                <input type="range" value="50" min="1" max="100" step="1" name="base-control-point-count" class="base-control-point-count">
+            </div>
+            <button onclick="saveParameters()">Zapisz parametry</button>
+        </div>
+    </div>
+    
+</body>
+<script src="src/Vector.js"></script>
+<script src="src/utils.js"></script>
+<script src="src/globals.js"></script>
+<script src="src/math.js"></script>
+<script src="src/controll.js"></script>
+<script src="src/stateControll.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/fileIO.js"></script>
+<script src="src/main.js"></script>
+</html>
+
+
+
