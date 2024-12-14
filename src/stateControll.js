@@ -28,6 +28,7 @@ function loadState(data) {
     if(data) {
         clusters = data['clusters']
         clusterLOD = data['clusterLOD'] ? data['clusterLOD'] : data['clusters'].map( _ => "medium" )
+        if (data['clusterLOD'].length != data['clusters'].length) clusterLOD = data['clusters'].map( _ => "medium" );
     }
 }
 

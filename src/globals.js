@@ -12,7 +12,9 @@ let clusters = [
     [],
 ]
 
-let clusterLOD = []
+let clusterLOD = [
+    'medium'
+]
 
 let LOD = {
     "low": {

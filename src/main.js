@@ -61,7 +61,11 @@ function drawKnots(knots) {
 
 
 function variableSplineThickness(time) {
-    return splineThickness * zoom
+    return splineThickness * zoom * Math.min(1, (0.4 + time))
+}
+
+function variableSplineOpacity(time) {
+    return (time)
 }
 
 function drawSplinesFast() {
@@ -96,17 +100,13 @@ function drawSplinesFast() {
         optimizedPoints = simplify_line(optimizedPoints, RDPReduction)
 
         let last_pt = optimizedPoints[0];
-        let last_pt_raster = raster_pt(last_pt);
-        ctx.beginPath()
-        ctx.moveTo(last_pt_raster.x, last_pt_raster.y);
+        
 
 
         let idx = 0;
         for (const point of optimizedPoints) {
             
-            let pt = raster_pt(point);
-            ctx.lineTo(pt.x, pt.y);
-            ct++;
+            
             // let dst = distance(last_pt, point);//distance(last_pt, point);
 
             // angle between first deriviative and second deriviative and perhaps length of snd derriviative
@@ -120,9 +120,24 @@ function drawSplinesFast() {
             // );
             // let dy = make_point((point.x - last_pt.x)/(point.u - last_pt.u), (point.y - last_pt.y)/(point.u - last_pt.u));
             // let ang = tpAngle(moment, {x:0,y:0}, dy); 
-
+            let last_pt_raster = raster_pt(last_pt);
+            ctx.beginPath()
+            ctx.moveTo(last_pt_raster.x, last_pt_raster.y);
+            let pt = raster_pt(point);
+            ctx.lineTo(pt.x, pt.y);
+            ct++;
             last_pt = point;
-            
+            ctx.lineCap = 'round'
+            let x = (idx/optimizedPoints.length);
+            let t = 4*x*(1-x)
+            // console.log(t)
+            let op = (variableSplineOpacity(t)) * 100;
+            ctx.strokeStyle = `rgb(200 0 0 / ${op}%)`
+            ctx.lineWidth = variableSplineThickness(t);
+            ctx.stroke();
+
+            last_pt = point
+                
             // console.log(dst)
             
 
@@ -143,10 +158,7 @@ function drawSplinesFast() {
 
         }  
 
-        ctx.lineCap = 'round'
-        ctx.strokeStyle = `rgb(200 0 0 / 80%)`
-        ctx.lineWidth = variableSplineThickness();
-        ctx.stroke();
+        
               
     }
     updatePointsCalculated(ct);
@@ -267,7 +279,7 @@ function drawLoop(timestamp) {
     if (!lastFrameTime) lastFrameTime = timestamp;
     let dt = timestamp - lastFrameTime;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgb(0 0 0 / 0%)";
+    ctx.fillStyle = "rgb(255 255 255 / 100%)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     let tl = raster_pt(make_point(0,0))
     let br = raster_pt(make_point(canvas.height * (background.width/background.height),canvas.height))
@@ -276,13 +288,13 @@ function drawLoop(timestamp) {
         tl.x, tl.y,
         br.x - tl.x, br.y - tl.y 
     );
-    drawAxis();
+    // drawAxis();
     drawCursorAt(getMousePos())
     drawSplinesFast();
     // drawSplinesPretty();
     // drawSplinesDebug();
 
-    drawClusters();
+    // drawClusters();
     // console.log(dt)
     zoom = lerp(dt / 100, zoom, targetZoom)
 

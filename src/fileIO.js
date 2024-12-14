@@ -34,6 +34,7 @@ $('#download-comp-file').addEventListener('click', () => {
   let lastState = getState()
   let intct = 0;
   let intus = 0;
+  let clusterIndex = 0;
   for ( cluster of lastState.clusters ) {
     let spline = new Spline(
       cluster, 
@@ -42,14 +43,20 @@ $('#download-comp-file').addEventListener('click', () => {
       100, 
       splinePointsRounding
     );
+    let lodref = LOD[clusterLOD[clusterIndex]];
+    let unoptimizedPoints = [...spline.nextPoint(true)];
+    let optimizedPoints = CurveSimplificationAlgorithm(unoptimizedPoints, lodref.lineApproximationAngle);
+    optimizedPoints = simplify_line(optimizedPoints, RDPReduction)
+    
     intct += spline.points.length;
+
     let bufferX = `x := [${spline.points.map( e => e['x'])}]`;
     let bufferY = `y := [${spline.points.map( e => e['y'])}]`;
     let bufferT = `t := [${spline.points.map( (_,i) => spline.x(i))}]`;
-    let pts = [...spline.nextPoint(true)];
-    intus += pts.length;
-    let bufferU = `u:= [${pts.map( p => p.u )}]`;
-    buffer += bufferX + "\n" + bufferY + "\n" + bufferT + "\n" + bufferU + "\n\n";
+    intus += optimizedPoints.length;
+    let bufferU = `u:= [${optimizedPoints.map( p => p.u )}]`;
+    buffer += bufferX + " " + bufferY + " " + bufferT + " " + bufferU + "\n\n";
+    clusterIndex++;
   }
 
   download(buffer, "konkurs-I-344635-dane.txt", "text")

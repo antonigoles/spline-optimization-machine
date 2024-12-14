@@ -37,7 +37,7 @@ function refreshObjectSelector() {
 refreshObjectSelector();
 
 function addPoint(point) {
-    if (clusters.length == 0) clusters.push([]);
+    if (clusters.length == 0) addObject();
     if (selectedCluseter < 0 ) selectedCluseter = 0;
     if (selectedCluseter >= clusters.length) selectedCluseter = clusters.length-1;
     clusters[selectedCluseter].push(deraster_pt(point));
@@ -51,6 +51,7 @@ function remObject() {
 
 function addObject() {
     clusters.push([]);
+    clusterLOD.push('medium')
     selectedCluseter = clusters.length - 1;
     refreshObjectSelector()
 }
@@ -112,3 +113,10 @@ $('#lod-sel').addEventListener('change', _ => {
 
 $('#rem-point-btn').addEventListener('click', remLastPoint)
 $('#revert-rem-point-btn').addEventListener('click', revertRemLastPoint)
+
+$("#download-image").addEventListener('click', () => {
+    let link = $("#download-image");
+    link.setAttribute('download', 'konkurs-I-344635.jpg');
+    link.setAttribute('href', canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream"));
+    // link.click();
+});
